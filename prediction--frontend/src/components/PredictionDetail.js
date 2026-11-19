@@ -77,7 +77,7 @@ const PredictionDetail = ({ question, predictExchange, conditionalTokens, usdc, 
     }
   };
 
-  // Функция для получения информации о выигрыше пользователя (без getUserWinningInfo)
+  // Функция для получения информации о выигрыше пользователя
   const fetchUserWinningInfo = async (qId) => {
     if (!predictExchange || !account || !qId || !conditionalTokens) return;
     try {

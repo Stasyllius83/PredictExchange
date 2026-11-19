@@ -1,7 +1,7 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { ethers } from 'ethers';
 
-const CreatePrediction = ({ predictExchange}) => {
+const CreatePrediction = ({ predictExchange, account }) => {
   const [question, setQuestion] = useState('');
   const [oracle, setOracle] = useState('');
   const [predictedPrice, setPredictedPrice] = useState('');
@@ -30,19 +30,19 @@ const CreatePrediction = ({ predictExchange}) => {
 
   const validateForm = () => {
     const newErrors = {};
-
+    
     if (!question.trim()) {
       newErrors.question = "Question is required";
     } else if (question.length > 200) {
       newErrors.question = "Question must be less than 200 characters";
     }
-
+    
     if (!oracle.trim()) {
       newErrors.oracle = "Oracle address is required";
     } else if (!ethers.isAddress(oracle)) {
       newErrors.oracle = "Invalid Ethereum address";
     }
-
+    
     if (!predictedPrice && predictedPrice !== 0) {
       newErrors.predictedPrice = "Predicted price is required";
     } else {
@@ -57,13 +57,13 @@ const CreatePrediction = ({ predictExchange}) => {
         newErrors.predictedPrice = "Price must be an integer (whole number)";
       }
     }
-
+    
     // Проверка длительности
     const days = parseInt(durationDays) || 0;
     const hours = parseInt(durationHours) || 0;
     const minutes = parseInt(durationMinutes) || 0;
     const totalSeconds = convertToSeconds(days, hours, minutes);
-
+    
     if (days === 0 && hours === 0 && minutes === 0) {
       newErrors.duration = "Duration must be greater than 0";
     } else if (totalSeconds > 31536000) { // 1 год в секундах
@@ -73,7 +73,7 @@ const CreatePrediction = ({ predictExchange}) => {
     } else if (hours > 23) {
       newErrors.duration = "Hours cannot exceed 23";
     }
-
+    
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -83,30 +83,30 @@ const CreatePrediction = ({ predictExchange}) => {
       alert("Contract not connected");
       return;
     }
-
+    
     if (!validateForm()) {
       return;
     }
-
+    
     setLoading(true);
     try {
       const predictedPriceValue = parseInt(predictedPrice);
       const durationInSeconds = convertToSeconds(
-        durationDays,
-        durationHours,
+        durationDays, 
+        durationHours, 
         durationMinutes
       );
-
+      
       const tx = await predictExchange.createPrediction(
-        question,
-        oracle,
+        question, 
+        oracle, 
         predictedPriceValue,
         durationInSeconds
       );
-
+      
       await tx.wait();
       alert("Prediction created successfully!");
-
+      
       // Очищаем форму
       setQuestion('');
       setOracle('');
@@ -115,10 +115,10 @@ const CreatePrediction = ({ predictExchange}) => {
       setDurationHours('');
       setDurationMinutes('');
       setErrors({});
-
+      
     } catch (err) {
       console.error("Error creating prediction:", err);
-
+      
       let errorMessage = "Transaction failed: ";
       if (err.reason) {
         errorMessage += err.reason;
@@ -133,7 +133,7 @@ const CreatePrediction = ({ predictExchange}) => {
       } else {
         errorMessage += "Unknown error";
       }
-
+      
       alert(errorMessage);
     } finally {
       setLoading(false);
@@ -148,23 +148,23 @@ const CreatePrediction = ({ predictExchange}) => {
   };
 
   return (
-    <div style={{
-      border: '1px solid #ccc',
-      padding: '1.5rem',
+    <div style={{ 
+      border: '1px solid #ccc', 
+      padding: '1.5rem', 
       margin: '1rem 0',
       borderRadius: '8px',
       backgroundColor: '#f9f9f9'
     }}>
       <h2 style={{ marginTop: 0 }}>Create Prediction (Admin only)</h2>
-
+      
       <div style={{ marginBottom: '1rem' }}>
         <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold' }}>
           Question:
         </label>
-        <input
+        <input 
           type="text"
-          style={{
-            width: '100%',
+          style={{ 
+            width: '100%', 
             padding: '0.5rem',
             border: errors.question ? '1px solid red' : '1px solid #ccc',
             borderRadius: '4px'
@@ -180,15 +180,15 @@ const CreatePrediction = ({ predictExchange}) => {
           </small>
         )}
       </div>
-
+      
       <div style={{ marginBottom: '1rem' }}>
         <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold' }}>
           Oracle Address:
         </label>
-        <input
+        <input 
           type="text"
-          style={{
-            width: '100%',
+          style={{ 
+            width: '100%', 
             padding: '0.5rem',
             border: errors.oracle ? '1px solid red' : '1px solid #ccc',
             borderRadius: '4px'
@@ -207,18 +207,18 @@ const CreatePrediction = ({ predictExchange}) => {
           Address of the oracle that will determine the outcome
         </small>
       </div>
-
+      
       <div style={{ marginBottom: '1rem' }}>
         <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold' }}>
           Predicted Price (USD):
         </label>
-        <input
+        <input 
           type="number"
           step="1"
           min="0"
           max="1000000"
-          style={{
-            width: '100%',
+          style={{ 
+            width: '100%', 
             padding: '0.5rem',
             border: errors.predictedPrice ? '1px solid red' : '1px solid #ccc',
             borderRadius: '4px',
@@ -240,12 +240,12 @@ const CreatePrediction = ({ predictExchange}) => {
           Example: 5000 = $5,000 USD target price
         </small>
       </div>
-
+      
       <div style={{ marginBottom: '1rem' }}>
         <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold' }}>
           Duration:
         </label>
-
+        
         <div style={{ display: 'flex', gap: '15px', flexWrap: 'wrap', marginBottom: '10px' }}>
           <div style={{ flex: 1, minWidth: '100px' }}>
             <input
@@ -256,8 +256,8 @@ const CreatePrediction = ({ predictExchange}) => {
               value={durationDays}
               onChange={e => setDurationDays(e.target.value)}
               placeholder="Days"
-              style={{
-                width: '100%',
+              style={{ 
+                width: '100%', 
                 padding: '0.5rem',
                 border: errors.duration ? '1px solid red' : '1px solid #ccc',
                 borderRadius: '4px'
@@ -266,7 +266,7 @@ const CreatePrediction = ({ predictExchange}) => {
             />
             <small style={{ color: '#666' }}>Days</small>
           </div>
-
+          
           <div style={{ flex: 1, minWidth: '100px' }}>
             <input
               type="number"
@@ -276,8 +276,8 @@ const CreatePrediction = ({ predictExchange}) => {
               value={durationHours}
               onChange={e => setDurationHours(e.target.value)}
               placeholder="Hours"
-              style={{
-                width: '100%',
+              style={{ 
+                width: '100%', 
                 padding: '0.5rem',
                 border: errors.duration ? '1px solid red' : '1px solid #ccc',
                 borderRadius: '4px'
@@ -286,7 +286,7 @@ const CreatePrediction = ({ predictExchange}) => {
             />
             <small style={{ color: '#666' }}>Hours</small>
           </div>
-
+          
           <div style={{ flex: 1, minWidth: '100px' }}>
             <input
               type="number"
@@ -296,8 +296,8 @@ const CreatePrediction = ({ predictExchange}) => {
               value={durationMinutes}
               onChange={e => setDurationMinutes(e.target.value)}
               placeholder="Minutes"
-              style={{
-                width: '100%',
+              style={{ 
+                width: '100%', 
                 padding: '0.5rem',
                 border: errors.duration ? '1px solid red' : '1px solid #ccc',
                 borderRadius: '4px'
@@ -307,13 +307,13 @@ const CreatePrediction = ({ predictExchange}) => {
             <small style={{ color: '#666' }}>Minutes</small>
           </div>
         </div>
-
+        
         {errors.duration && (
           <small style={{ color: 'red', display: 'block', marginTop: '0.25rem' }}>
             {errors.duration}
           </small>
         )}
-
+        
         {/* Предустановленные длительности */}
         <div style={{ marginTop: '10px' }}>
           <small style={{ color: '#666', display: 'block', marginBottom: '5px' }}>
@@ -392,7 +392,7 @@ const CreatePrediction = ({ predictExchange}) => {
             </button>
           </div>
         </div>
-
+        
         <small style={{ color: '#666', display: 'block', marginTop: '10px' }}>
           Total duration: <strong>
             {formatDuration(
@@ -406,11 +406,11 @@ const CreatePrediction = ({ predictExchange}) => {
           )}
         </small>
       </div>
-
-      <div style={{
-        backgroundColor: '#e8f5e9',
-        padding: '0.75rem',
-        borderRadius: '4px',
+      
+      <div style={{ 
+        backgroundColor: '#e8f5e9', 
+        padding: '0.75rem', 
+        borderRadius: '4px', 
         marginBottom: '1rem',
         fontSize: '0.9rem'
       }}>
@@ -436,9 +436,9 @@ const CreatePrediction = ({ predictExchange}) => {
           </li>
         </ul>
       </div>
-
-      <button
-        onClick={handleCreate}
+      
+      <button 
+        onClick={handleCreate} 
         disabled={loading}
         style={{
           width: '100%',
