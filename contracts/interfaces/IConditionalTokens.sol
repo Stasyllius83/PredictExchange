@@ -8,7 +8,7 @@ import {IERC20} from "../tokens/IERC20.sol";
  * @notice Основные функции генерации ИД условий, позиции, минтинга и сжигания токенов
  */
 interface IConditionalTokens {
-    
+
     /**
     * @notice получает идентификатор условия для условных токенов
     * @param oracle адрес оракула
@@ -36,7 +36,7 @@ interface IConditionalTokens {
     * @dev чеканит токены (только для вариантов "ДА" или "НЕТ")
     */
     function mintCTF(IERC20 collateralToken, address to, bytes32 conditionId, uint8 indexSet, uint256 amount, bytes memory data) external;
-    
+
     /**
     * @notice сжигает условные токены
     * @param collateralToken адрес токена обеспечения

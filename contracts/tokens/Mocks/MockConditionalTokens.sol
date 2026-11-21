@@ -28,4 +28,4 @@ contract MockConditionalTokens is ERC1155 {
         uint256 id = getPositionId(collateralToken, conditionId, indexSet);
         _burn(from, id, amount);
     }
-} 
+}

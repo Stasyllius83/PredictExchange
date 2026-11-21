@@ -8,7 +8,7 @@ import { Order } from "../libraries/OrderStructs.sol";
  * @notice Основные функции для хэширования и проверки подписи
  */
 abstract contract IHashing {
-    
+
     /// @notice возникает, когда подпись некорректна
     error InvalidSignature();
 

@@ -28,7 +28,7 @@ abstract contract Exchange is IExchange, IAssets, IAssetFunctions, IHashing, Non
     // Хранилище разрешенных вопросов
     mapping(bytes32 questionId => bool resolved) public predictionResolved;
     // Хранилище ответов на разрешенные вопросы
-    mapping(bytes32 questionId => bool outcome) public predictionOutcome; 
+    mapping(bytes32 questionId => bool outcome) public predictionOutcome;
     // Хранилище выиграшных сумм уже разрешенных вопросов
     mapping(bytes32 questionId => uint256 winningTokenAmount) public winningTokenAmount;
     // Хранилище пользователей, получившие выигрыш уже разрешенных вопросов
@@ -42,7 +42,7 @@ abstract contract Exchange is IExchange, IAssets, IAssetFunctions, IHashing, Non
     * @notice преобразует текст вопроса в данные bytes32
     * @param _source текст вопроса
     * @dev преобразует текст вопроса в bytes32 для ключа мэппинга
-    * @return result возвращает текст вопроса в bytes32 
+    * @return result возвращает текст вопроса в bytes32
     */
     function stringToBytes32(string memory _source) internal pure returns (bytes32 result) {
         bytes memory tempEmptyStringTest = bytes(_source);
@@ -67,7 +67,7 @@ abstract contract Exchange is IExchange, IAssets, IAssetFunctions, IHashing, Non
         bytes32 _conditionId;
         _questionId = stringToBytes32(_question);
         _conditionId = IConditionalTokens(getCtf()).getConditionId(_oracle, _questionId);
-        
+
         if (bytes(predictions[_questionId].condition).length == 0 && _oracle != address(0) && _predictedPrice != 0 && _duration != 0) {
             predictions[_questionId].condition = _question;
             predictions[_questionId].conditionId = _conditionId;
@@ -87,18 +87,18 @@ abstract contract Exchange is IExchange, IAssets, IAssetFunctions, IHashing, Non
     * @param _side сторона заказа
     * @param _bid ставка заказа
     * @param _fillamount сумма ставки
-    * @param _expiration срок заказа 
+    * @param _expiration срок заказа
     * @param _signature подпись
     * @dev создает новый заказ
     */
     function _fillOrder(bytes32 _questionId, uint256 _salt, Side _side, Bid _bid, uint256 _fillamount, uint256 _expiration, bytes memory _signature) internal {
-        
+
         require(block.timestamp < predictions[_questionId].endsAt, "Ended!");
-        
+
         require(_fillamount > 0, "Zero bid");
 
-        uint256 tokenId = IConditionalTokens(getCtf()).getPositionId(IERC20(getCollateral()), 
-                                                                    predictions[_questionId].conditionId, 
+        uint256 tokenId = IConditionalTokens(getCtf()).getPositionId(IERC20(getCollateral()),
+                                                                    predictions[_questionId].conditionId,
                                                                     uint8(_bid));
         // проверка баланса при продаже
         if(_side == Side.SELL) {
@@ -125,7 +125,7 @@ abstract contract Exchange is IExchange, IAssets, IAssetFunctions, IHashing, Non
             });
 
             signatures[msg.sender][tokenId][_fillamount] = _signature;
-        } 
+        }
 
         predictions[_questionId].orders.push(newOrder);
 
@@ -149,12 +149,12 @@ abstract contract Exchange is IExchange, IAssets, IAssetFunctions, IHashing, Non
         Bid bidOpposite = _bid == Bid.NO ? Bid.YES : Bid.NO;
         Side sideOpposite = _side == Side.SELL ? Side.BUY : Side.SELL;
 
-        uint256 i = 0; 
+        uint256 i = 0;
 
         for (; i < length;) {
-            
+
             //сделка и минт обоих
-            if ((cPrediction.orders[i].side == Side.BUY) && (cPrediction.orders[i].bid == bidOpposite) && 
+            if ((cPrediction.orders[i].side == Side.BUY) && (cPrediction.orders[i].bid == bidOpposite) &&
                 (ONE - _fillamount == cPrediction.orders[i].amount)) {
 
                 _validateOrder(hashOrder(cPrediction.orders[i]), cPrediction.orders[i], signatures[cPrediction.orders[i].signer][cPrediction.orders[i].tokenId][cPrediction.orders[i].amount]);
@@ -162,10 +162,10 @@ abstract contract Exchange is IExchange, IAssets, IAssetFunctions, IHashing, Non
                 incrementNonce();
                 delete predictions[_questionId].orders[i];
 
-            } else 
+            } else
 
             //обмен токенами
-            if ((cPrediction.orders[i].side == sideOpposite) && (cPrediction.orders[i].bid == _bid) && 
+            if ((cPrediction.orders[i].side == sideOpposite) && (cPrediction.orders[i].bid == _bid) &&
                 (_fillamount == cPrediction.orders[i].amount)) {
 
                 _validateOrder(hashOrder(cPrediction.orders[i]), cPrediction.orders[i], signatures[cPrediction.orders[i].signer][cPrediction.orders[i].tokenId][cPrediction.orders[i].amount]);
@@ -176,7 +176,7 @@ abstract contract Exchange is IExchange, IAssets, IAssetFunctions, IHashing, Non
             unchecked {
                 ++i;
             }
-        }   
+        }
         return matchType;
     }
 
@@ -210,8 +210,8 @@ abstract contract Exchange is IExchange, IAssets, IAssetFunctions, IHashing, Non
 
         cPrediction.matchesCounter ++;
 
-        uint256 tokenId = IConditionalTokens(getCtf()).getPositionId(IERC20(getCollateral()), 
-                                                                    cPrediction.conditionId, 
+        uint256 tokenId = IConditionalTokens(getCtf()).getPositionId(IERC20(getCollateral()),
+                                                                    cPrediction.conditionId,
                                                                     uint8(_bid));
         emit OrdersMatched(msg.sender, _order.tokenId, tokenId, _order.amount - orderFee, _fillamount - senderFee);
         return matchType;
@@ -234,8 +234,8 @@ abstract contract Exchange is IExchange, IAssets, IAssetFunctions, IHashing, Non
         uint256 senderFee = _bid == Bid.YES ? cPrediction.feeYes : cPrediction.feeNo;
         uint256 orderFee = _order.bid == Bid.YES ? cPrediction.feeYes : cPrediction.feeNo;
 
-        uint256 tokenId = IConditionalTokens(getCtf()).getPositionId(IERC20(getCollateral()), 
-                                                                    cPrediction.conditionId, 
+        uint256 tokenId = IConditionalTokens(getCtf()).getPositionId(IERC20(getCollateral()),
+                                                                    cPrediction.conditionId,
                                                                     uint8(_bid));
 
         if (_side == Side.BUY) {
@@ -255,7 +255,7 @@ abstract contract Exchange is IExchange, IAssets, IAssetFunctions, IHashing, Non
             _chargeFee(_order.signer, 0, orderFee);
              emit OrdersMatched(msg.sender, 0, tokenId, _order.amount - orderFee, _fillamount - senderFee);
         }
-        
+
         if (_bid == Bid.YES) {
             predictions[_questionId].sumYes -= cPrediction.feeYes;
         } else {
@@ -264,7 +264,7 @@ abstract contract Exchange is IExchange, IAssets, IAssetFunctions, IHashing, Non
 
         return matchType;
     }
-    
+
     /**
     * @notice вычисляет цены позиций
     * @param _questionId вопрос предсказания
@@ -325,10 +325,10 @@ abstract contract Exchange is IExchange, IAssets, IAssetFunctions, IHashing, Non
         if (_order.expiration <= 0 || _order.expiration < block.timestamp) {
             revert OrderExpired();
         }
-        
+
         // проверка подписи
         validateOrderSignature(_orderHash, _order, _signature);
-        
+
         // проверка nonce
         if (!isValidNonce(_order.signer, _order.nonce)) {
             revert InvalidNonce();
@@ -367,7 +367,7 @@ abstract contract Exchange is IExchange, IAssets, IAssetFunctions, IHashing, Non
         }
         predictionResolved[_questionId] = true;
         winningTokenAmount[_questionId] = (predictions[_questionId].sumYes + predictions[_questionId].sumNo) / predictions[_questionId].matchesCounter;
-    
+
         emit PredictionResolved(_questionId, predictionOutcome[_questionId], winningTokenAmount[_questionId]);
     }
 

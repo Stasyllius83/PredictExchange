@@ -35,7 +35,7 @@ abstract contract Nonce is INonce {
 
     /**
     * @notice проверяет что nonce пользователя соответствует данной транзакции
-    * @param user пользователь   
+    * @param user пользователь
     * @param userNonce nonce
     * @dev проверяет что nonce пользователя соответствует данной транзакции
     * @return bool возвращает ложь/истина

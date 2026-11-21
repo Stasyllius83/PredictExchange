@@ -24,7 +24,7 @@ abstract contract AssetFunctions is IAssets, IAssetFunctions, IERC1155 {
         if (tokenId == 0) return IERC20(getCollateral()).balanceOf(address(this));
         return IERC1155(getCtf()).balanceOf(address(this), tokenId);
     }
-    
+
     /**
     * @notice получает баланс ERC1155 токенов пользователя
     * @param tokenId идентификатор токена
@@ -34,7 +34,7 @@ abstract contract AssetFunctions is IAssets, IAssetFunctions, IERC1155 {
     function _getBalanceCTF(address holder, uint256 tokenId) internal override returns (uint256) {
         return IERC1155(getCtf()).balanceOf(holder, tokenId);
     }
-    
+
     /**
     * @notice переводит токены
     * @param from адрес отправителя
@@ -47,7 +47,7 @@ abstract contract AssetFunctions is IAssets, IAssetFunctions, IERC1155 {
         if (id == 0) return _transferCollateral(from, to, value);
         return _transferCTF(from, to, id, value);
     }
-    
+
     /**
     * @notice переводит токены обеспечения
     * @param from адрес отправителя
@@ -60,7 +60,7 @@ abstract contract AssetFunctions is IAssets, IAssetFunctions, IERC1155 {
         if (from == address(this)) SafeTransferLib.safeTransfer(ERC20(token), to, value);
         else SafeTransferLib.safeTransferFrom(ERC20(token), from, to, value);
     }
-    
+
     /**
     * @notice переводит условные токены
     * @param from адрес отправителя
@@ -71,7 +71,7 @@ abstract contract AssetFunctions is IAssets, IAssetFunctions, IERC1155 {
     function _transferCTF(address from, address to, uint256 id, uint256 value) internal {
         IERC1155(getCtf()).safeTransferFrom(from, to, id, value, "");
     }
-    
+
     /**
     * @notice чеканит токены
     * @param to адрес получателя
@@ -83,7 +83,7 @@ abstract contract AssetFunctions is IAssets, IAssetFunctions, IERC1155 {
     function _mint(address to, bytes32 conditionId, uint8 indexSet, uint256 amount) internal override {
         IConditionalTokens(getCtf()).mintCTF(IERC20(getCollateral()), to, conditionId, indexSet, amount, "");
     }
-    
+
     /**
     * @notice сжигает токены
     * @param to адрес владельца

@@ -35,7 +35,7 @@ abstract contract Assets is IAssets {
     function getCollateral() public view override returns (address) {
         return collateral;
     }
-    
+
     /**
     * @notice получает адрес контракта условных токенов
     * @dev используется для получения адреса контракта условных токенов

@@ -13,7 +13,7 @@ abstract contract IExchange {
     struct Prediction {
         /// @notice условие спора предсказания
         string condition;
-        /// @notice идентификатор условия 
+        /// @notice идентификатор условия
         bytes32 conditionId;
         /// @notice адрес оракула
         address oracle;
@@ -95,7 +95,7 @@ abstract contract IExchange {
     */
     event FeeCharged(
         address indexed payer,
-        uint256 tokenId, 
+        uint256 tokenId,
         uint256 fee
     );
 
@@ -119,7 +119,7 @@ abstract contract IExchange {
     * @param questionId идентификатор вопроса
     * @param amount значение выигрыша
     * @param outcome значение исхода
-    */   
+    */
     event WinningsClaimed(
         address indexed user,
         bytes32 indexed questionId,
@@ -143,11 +143,11 @@ abstract contract IExchange {
     * @dev разрешает спор (только администратор)
     */
     function _resolvePrediction(bytes32 _questionId) internal virtual;
- 
+
     /**
     * @notice получение выигрыша участником
     * @param _questionId идентификатор вопроса предсказания
     * @dev получение выигрыша участником
-    */   
+    */
     function _claimWinnings(bytes32 _questionId) internal virtual;
 }

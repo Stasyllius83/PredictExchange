@@ -6,7 +6,7 @@ pragma solidity <0.9.0;
  * @notice Основные функции для обновления и проверки nonce
  */
 abstract contract INonce {
-    
+
     /**
     * @notice увеличивает nonce на 1
     * @dev увеличивает nonce на 1
@@ -15,7 +15,7 @@ abstract contract INonce {
 
     /**
     * @notice проверяет что nonce пользователя соответствует данной транзакции
-    * @param user пользователь   
+    * @param user пользователь
     * @param userNonce nonce
     * @dev проверяет что nonce пользователя соответствует данной транзакции
     * @return bool возвращает ложь/истина

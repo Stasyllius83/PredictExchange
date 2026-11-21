@@ -11,7 +11,7 @@ import { IConditionalTokens } from "../interfaces/IConditionalTokens.sol";
  * @notice Основные функции генерации идентификатора условий, позиции, минтинга и сжигания токенов
  */
 contract ConditionalTokens is IConditionalTokens, ERC1155 {
-    
+
     /**
     * @notice конструктор контракта
     * @dev наследует контракт ERC1155
@@ -23,7 +23,7 @@ contract ConditionalTokens is IConditionalTokens, ERC1155 {
     * @param oracle адрес оракула
     * @param questionId идентификатор вопроса
     * @dev получает идентификатор условия
-    * return возвращает значение идентификатора
+    * @return возвращает значение идентификатора
     */
     function getConditionId(address oracle, bytes32 questionId) public pure returns (bytes32) {
         return keccak256(abi.encodePacked(oracle, questionId));
@@ -35,12 +35,12 @@ contract ConditionalTokens is IConditionalTokens, ERC1155 {
     * @param conditionId идентификатор условия
     * @param bid позиция выбора/ставки
     * @dev получает идентификатор позиции
-    * return возвращает значение идентификатора позиции
+    * @return возвращает значение идентификатора позиции
     */
     function getPositionId(IERC20 collateralToken, bytes32 conditionId, uint8 bid) public pure returns (uint) {
         return uint(keccak256(abi.encodePacked(collateralToken, conditionId, bid)));
     }
-    
+
     /**
     * @notice чеканит условные токены CTF
     * @param collateralToken адрес токена обеспечения
@@ -73,5 +73,5 @@ contract ConditionalTokens is IConditionalTokens, ERC1155 {
                     amount
                 );
     }
-    
+
 }

@@ -22,7 +22,7 @@ bytes32 constant ORDER_TYPEHASH = keccak256(
         /// @notice сторона заказа: BUY (покупка) или SELL (продажа)
         Side side;
         /// @notice ставка заказа: YES (за) или NO (против)
-        Bid bid; 
+        Bid bid;
     }
 
     /// @notice сторона ордера
@@ -51,7 +51,7 @@ bytes32 constant ORDER_TYPEHASH = keccak256(
     /// @notice не владелец контракта
     error NotOwner();
 
-    /// @notice заказ истек
+    /// @notice срок заказ истек
     error OrderExpired();
 
     /// @notice некорректный нонс

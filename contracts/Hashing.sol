@@ -55,7 +55,7 @@ abstract contract Hashing is EIP712, IHashing {
     * @dev проверяет заказ на соответствие подписи подписанту. Генерирует ошибку, если провал
     */
     function validateOrderSignature(
-        bytes32 orderHash, 
+        bytes32 orderHash,
         Order memory order,
         bytes memory signature
         ) public pure override {

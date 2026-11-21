@@ -17,12 +17,12 @@ import { Base, ERC1155 } from "../contracts/Base.sol";
  * @author Станислав
  * @notice Основные функции для проведения ставок
  */
-contract PredictExchange is 
+contract PredictExchange is
     Base,
-    Auth, 
-    Assets, 
-    AssetFunctions, 
-    Hashing("Predict Exchange", "1"), 
+    Auth,
+    Assets,
+    AssetFunctions,
+    Hashing("Predict Exchange", "1"),
     Nonce,
     Exchange
     {
@@ -120,7 +120,7 @@ contract PredictExchange is
         function getYesPrice(bytes32 _questionId) external view returns (uint256) {
             return predictions[_questionId].yesPrice;
         }
-        
+
         /**
         * @notice получает информацию о цене "нет"
         * @param _questionId идентификатор вопроса предсказания
