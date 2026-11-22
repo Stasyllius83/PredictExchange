@@ -1,57 +1,69 @@
-# Sample Hardhat 3 Beta Project (`mocha` and `ethers`)
+# В данном проекте представлена децентрализованная биржа прогнозов
+Администратор создает тему прогноза и задает время для финализации.
+Пользователю предлагается делать ставки в USDC (ERC20) за исход спора (Да/НЕТ).
+В процессе токены ERC20 (обеспечения) обмениваются на сгенерированные токены
+ERC1155 (условные токены), соответствующие сделанной ставке и теме прогноза.
 
-This project showcases a Hardhat 3 Beta project using `mocha` for tests and the `ethers` library for Ethereum interactions.
 
-To learn more about the Hardhat 3 Beta, please visit the [Getting Started guide](https://hardhat.org/docs/getting-started#getting-started-with-hardhat-3). To share your feedback, join our [Hardhat 3 Beta](https://hardhat.org/hardhat3-beta-telegram-group) Telegram group or [open an issue](https://github.com/NomicFoundation/hardhat/issues/new) in our GitHub issue tracker.
+## Описание/Пошаговая инструкция опробования в тестовой сети sepolia:
+1. Разверните исходный контракт биржи. Только владелец развернувший контракт может
+добавлять администраторов и создавать новые прогнозы.
+2. Для реализации плажей в USDC был создан контракт ERC20 на котором пользователю
+необходимо сгенерировать токены.
+3. Контракт оракула реализован на базе контрактов аггрегаторов chainlink.
+4. Администратор создает предсказание (функция createPrediction), указывая адрес токена
+chainlink и прогнозируемую цену, которую не превысит цена токена назначенное время.
+5. Пользователи на начале торгов могут делать ставки да/нет (функция fillOrder), покупая
+токены ERC1155. На начале торгов ставки принимаются по сопоставлению ставка
+"да" + ставка "нет" = 1 USDC. Заказ пользователя подписывается, фиксируется в книге
+заказов и ждет заказа пользователя с противоположной ставкой сопоставимой в
+вышеприведенном соотношении.
+6. После осуществления первой сделки формируются цены да/нет.
+7. Пользователя приобретшие токены ERC1155 могут их продать по существующей цене, сделав
+заказ на продажу. При сопоставлении 1:1 с пользователем, желающим купить токены
+на тот же исход по существующей цене.
+8. При наступлении времени прогноза ставки сделать нельзя. Администратор проводит
+(функция resolvePrediction) разрешение спора. После каждый пользователь,
+угадавший исход может забрать выигрыш (функция claimWinnings).
+9. Для поиска прогноза в блокчейне используется ID прогноза. Генерируется из
+условия/вопроса спора (функции getQuestionId и getPredictionById).
 
-## Project Overview
 
-This example project includes:
+## Развернутые контракты:
+1. Контракт децентрализованной биржи [контракт PredictExchange](./contracts/PredictExchange.sol)
+2. Контракт обеспечения USDC реализован в [в контракте USDC](./contracts/tokens/USDC.sol), контракт
+условных токенов в [контракте ConditionalTokens](./contracts/tokens/ConditionalTokens.sol)
 
-- A simple Hardhat configuration file.
-- Foundry-compatible Solidity unit tests.
-- TypeScript integration tests using `mocha` and ethers.js
-- Examples demonstrating how to connect to different types of networks, including locally simulating OP mainnet.
 
-## Usage
-
-### Running Tests
-
-To run all the tests in the project, execute the following command:
-
+## Как запустить тест на локальной машине
+Для запуска необходимо, чтобы на локальной машине было установлено программное обеспечение Node js.
+1. Необходимо склонировать репозиторий:
+```shell
+git clone https://github.com/Stasyllius83/PredictExchange.git
+```
+или
+```shell
+git clone git@github.com:Stasyllius83/PredictExchange.git
+```
+2. Установить зависимости для Node js, например:
+```shell
+npm init
+```
+3. Запустить тест:
 ```shell
 npx hardhat test
 ```
-
-You can also selectively run the Solidity or `mocha` tests:
+4. Для развертывания контракта
 
 ```shell
-npx hardhat test solidity
-npx hardhat test mocha
+npx hardhat ignition deploy ignition/modules/USDC.ts
+npx hardhat ignition deploy ignition/modules/ConditionalTokens.ts
+npx hardhat ignition deploy ignition/modules/PredictExchange.ts
 ```
-
-### Make a deployment to Sepolia
-
-This project includes an example Ignition module to deploy the contract. You can deploy this module to a locally simulated chain or to Sepolia.
-
-To run the deployment to a local chain:
+5. пример длятестовой сети Sepolia:
 
 ```shell
-npx hardhat ignition deploy ignition/modules/Counter.ts
-```
-
-To run the deployment to Sepolia, you need an account with funds to send the transaction. The provided Hardhat configuration includes a Configuration Variable called `SEPOLIA_PRIVATE_KEY`, which you can use to set the private key of the account you want to use.
-
-You can set the `SEPOLIA_PRIVATE_KEY` variable using the `hardhat-keystore` plugin or by setting it as an environment variable.
-
-To set the `SEPOLIA_PRIVATE_KEY` config variable using `hardhat-keystore`:
-
-```shell
-npx hardhat keystore set SEPOLIA_PRIVATE_KEY
-```
-
-After setting the variable, you can run the deployment with the Sepolia network:
-
-```shell
-npx hardhat ignition deploy --network sepolia ignition/modules/Counter.ts
+npx hardhat ignition deploy ignition/modules/USDC.ts --network sepolia
+npx hardhat ignition deploy ignition/modules/ConditionalTokens.ts --network sepolia
+npx hardhat ignition deploy ignition/modules/PredictExchange.ts --network sepolia
 ```
