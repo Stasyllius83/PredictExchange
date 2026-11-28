@@ -53,14 +53,14 @@ npm init
 ```shell
 npx hardhat test
 ```
-4. Для развертывания контракта
+4. Для развертывания контракта:
 
 ```shell
 npx hardhat ignition deploy ignition/modules/USDC.ts
 npx hardhat ignition deploy ignition/modules/ConditionalTokens.ts
 npx hardhat ignition deploy ignition/modules/PredictExchange.ts
 ```
-5. пример длятестовой сети Sepolia:
+5. Пример для тестовой сети Sepolia:
 
 ```shell
 npx hardhat ignition deploy ignition/modules/USDC.ts --network sepolia

@@ -1,70 +1,40 @@
-# Getting Started with Create React App
+# В данном проекте представлен фронтенд для децентрализованной биржи прогнозов
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Как запустить тест на локальной машине
+Для запуска необходимо, чтобы на локальной машине было установлено программное обеспечение Node js.
+1. Необходимо склонировать репозиторий:
+```shell
+git clone https://github.com/Stasyllius83/PredictExchange.prediction--frontend
+```
+или
+```shell
+git clone git@github.com:Stasyllius83/PredictExchange.prediction--frontend
+```
+2. В папке проекта запустить команду:
+```shell
+npm start
+```
+3. Откройте браузер по адресу:
 
-## Available Scripts
+[http://localhost:3000](http://localhost:3000)
 
-In the project directory, you can run:
+4. Установите кошелек по ссылке далее либо любой другой:
 
-### `npm start`
+https://metamask.com/ru/download
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+5. Администратор создает тему прогноза, вводя текст в поле "Question",
+адрес аггрегатора в "Oracle Address", цену в "Predicted Price (USD)",
+задает время для финализации Duration и нажимает кнопку Create Prediction.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+6. Пользователю предлагается делать ставки в USDC (ERC20) за исход спора (Да/НЕТ).
+Для необходимо подключить кошелек (кнопка "ConnectWallet") и выбрать тему спора
+из списка ниже заголовка Existing Predictions. После этого загружаются данные спора,
+его статус и время финализации. В зависимости от действий при покупке
+в графе "Buy Tokens" делает выбор Yes/No либо при продаже в графе "Sell Tokens"
+выбор YES Tokens/NO Tokens, вводит цену, время жизни разрешения(permit) и нажимает
+одноименную кнопку подтверждения "Buy Tokens"/"Sell Tokens".
+Далее уже в окне кошелька для подписи транзакции.
 
-### `npm test`
-
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
-### `npm run build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+7. Администратор проводит разрешение спора, нажимая кнопку "Resolve Prediction".
+Подтверждает транзакцией в блокчейне. После каждый пользователь,
+угадавший исход может забрать выигрыш, нажав кнопку "Claim Winnings".
